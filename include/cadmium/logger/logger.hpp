@@ -104,92 +104,92 @@ namespace cadmium {
                 if constexpr (std::is_same<LOGGER_SOURCE, DECLARED_SOURCE>::value) {
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_info_init>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_info_init(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_info_collect>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_info_collect(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_routing_collect>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_routing_collect(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_routing_collect_ic>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_routing_collect_ic(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_routing_collect_eic>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_routing_collect_eic(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_routing_collect_eoc>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_routing_collect_eoc(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_info_advance>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_info_advance(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_routing_ic_collect>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_routing_ic_collect(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_routing_eic_collect>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_routing_eic_collect(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::coor_routing_eoc_collect>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::coor_routing_eoc_collect(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::sim_info_init>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::sim_info_init(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::sim_state>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::sim_state(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::sim_info_collect>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::sim_info_collect(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::sim_messages_collect>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::sim_messages_collect(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::sim_info_advance>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::sim_info_advance(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::sim_local_time>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::sim_local_time(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::run_global_time>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::run_global_time(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
 
                     if constexpr (std::is_same<EVENT, cadmium::logger::run_info>::value) {
                         SINK_PROVIDER::sink() << FORMATTER::run_info(ps...);
-                        SINK_PROVIDER::sink() << std::endl;
+                        SINK_PROVIDER::sink() << FORMATTER::delimiter;
                     }
                 }
             }

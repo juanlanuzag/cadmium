@@ -74,6 +74,7 @@ namespace cadmium {
 
             template<typename TIME>
             struct formatter {
+                static std::string delimiter = "\n";
 
                 static std::string coor_info_init(const TIME& t, const std::string& model_id) {
                     std::ostringstream oss;
@@ -191,6 +192,169 @@ namespace cadmium {
                     oss << " is ";
                     oss << (to - from);
                     oss << "s";
+                    return oss.str();
+                };
+
+                static TIME run_global_time(const TIME& global_time) {
+                    return global_time;
+                }
+
+                static std::string run_info(const std::string& message) {
+                    return message;
+                }
+            };
+
+            template<typename TIME>
+            struct json_formatter {
+                static std::string delimiter = ",";
+
+                static std::string coor_info_init(const TIME& t, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "coordinator",)";
+                    oss << R"("action": "init",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string coor_info_collect(const TIME& t, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "coordinator",)";
+                    oss << R"("action": "collect output",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string coor_routing_eoc_collect(const TIME& t, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "coordinator",)";
+                    oss << R"("action": "route EOC",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string coor_info_advance(const TIME& from, const TIME& to, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "coordinator",)";
+                    oss << R"("action": "advance simulation",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time_from": ")" << from << R"(",)";
+                    oss << R"("time_to": ")" << to << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string coor_routing_ic_collect(const TIME& t, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "coordinator",)";
+                    oss << R"("action": "ic collect",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string coor_routing_eic_collect(const TIME& t, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "coordinator",)";
+                    oss << R"("action": "eic collect",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string coor_routing_collect(const std::string& from_port, const std::string& to_port, const std::vector<std::string>& from_messages, const std::vector<std::string>& to_messages) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "coordinator",)";
+                    oss << R"("action": "route collect",)";
+                    oss << R"("to_port": ")" << to_port << R"(",)";
+                    oss << R"("to_port_msg": ")" << cadmium::helper::join(to_messages) << R"(",)";
+                    oss << R"("from_port": ")" << from_port << R"(",)";
+                    oss << R"("from_port_msg": ")" << cadmium::helper::join(from_messages) << R"(")";
+                    oss << "}";
+                    return oss.str();
+                }
+
+                static std::string sim_info_init(const TIME& t, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "simulator",)";
+                    oss << R"("action": "init",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                }
+
+                static std::string sim_state(const TIME& t, const std::string& model_id, const std::string& model_state) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "simulator",)";
+                    oss << R"("action": "state",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("state": ")" << model_state << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string sim_info_collect(const TIME& t, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "simulator",)";
+                    oss << R"("action": "collect output",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string sim_messages_collect(const TIME& t, const std::string& model_id, const std::string& outbox) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "simulator",)";
+                    oss << R"("action": "messages collect output",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("messages": ")" << outbox << R"(",)";
+                    oss << R"("time": ")" << t << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string sim_info_advance(const TIME& from, const TIME& to, std::string model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "simulator",)";
+                    oss << R"("action": "advance simulation",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time_from": ")" << from << R"(",)";
+                    oss << R"("time_to": ")" << to << R"(")";
+                    oss << "}";
+                    return oss.str();
+                };
+
+                static std::string sim_local_time(const TIME& from, const TIME& to, const std::string& model_id) {
+                    std::ostringstream oss;
+                    oss << "{";
+                    oss << R"("entity": "simulator",)";
+                    oss << R"("action": "advance simulation elapsed",)";
+                    oss << R"("model": ")" << model_id << R"(",)";
+                    oss << R"("time": ")" << to << R"(",)";
+                    oss << R"("elapsed": ")" << (to - from) << R"(")";
+                    oss << "}";
                     return oss.str();
                 };
 

@@ -93,6 +93,7 @@ namespace cadmium {
 
         template<typename TIME>
         struct formatter {
+            static std::string delimiter = "\n";
 
             static std::string coor_info_init(TIME t, const std::string& model_id) {
                 std::ostringstream oss;
