@@ -49,6 +49,21 @@ namespace cadmium {
 
                 coupled(std::string id) : _id(id) {}
 
+                void validate_links() const {
+                    if (!valid_ic_links(_models, _ic)) {
+                        throw std::domain_error("Coupled model" + _id + " has invalid IC links");
+                    }
+
+                    if (!valid_eic_links(_models, _input_ports, _eic)) {
+                        throw std::domain_error("Coupled model" + _id + " has invalid EIC links");
+                    }
+
+                    if(!valid_eoc_links(_models, _output_ports, _eoc)) {
+                        throw std::domain_error("Coupled model" + _id + " has invalid EOC links");
+                    }
+                }
+
+
                 coupled(
                         std::string id,
                         Models models,
@@ -66,17 +81,7 @@ namespace cadmium {
                         _eoc(eoc),
                         _ic(ic)
                 {
-                    if (!valid_ic_links(_models, _ic)) {
-                        throw std::domain_error("Coupled model" + _id + " has invalid IC links");
-                    }
-
-                    if (!valid_eic_links(_models, _input_ports, _eic)) {
-                        throw std::domain_error("Coupled model" + _id + " has invalid EIC links");
-                    }
-
-                    if(!valid_eoc_links(_models, _output_ports, _eoc)) {
-                        throw std::domain_error("Coupled model" + _id + " has invalid EOC links");
-                    }
+                    validate_links();
                 }
 
                 coupled(
@@ -96,17 +101,7 @@ namespace cadmium {
                         _eoc(eoc),
                         _ic(ic)
                 {
-                    if (!valid_ic_links(_models, _ic)) {
-                        throw std::domain_error("Coupled model" + _id + " has invalid IC links");
-                    }
-
-                    if (!valid_eic_links(_models, _input_ports, _eic)) {
-                        throw std::domain_error("Coupled model" + _id + " has invalid EIC links");
-                    }
-
-                    if(!valid_eoc_links(_models, _output_ports, _eoc)) {
-                        throw std::domain_error("Coupled model" + _id + " has invalid EOC links");
-                    }
+                    validate_links();
                 }
 
                 std::string get_id() const override {
