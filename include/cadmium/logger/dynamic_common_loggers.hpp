@@ -149,9 +149,10 @@ namespace cadmium {
 
                 static std::string sim_state(const TIME& t, const std::string& model_id, const std::string& model_state) {
                     std::ostringstream oss;
-                    oss << "State for model ";
+                    oss << t;
+                    oss << ",";
                     oss << model_id;
-                    oss << " is ";
+                    oss << ",";
                     oss << model_state;
                     return oss.str();
                 };

@@ -92,6 +92,8 @@ endforeach(exec_type)
 add_executable(clock_example example/main-clock.cpp)
 add_executable(count_fives_example example/main-count-fives.cpp)
 
+add_executable(CELLLLLL main.cpp)
+
 #Library Headers
 add_executable(cadmium_headers include)
 set_target_properties(cadmium_headers PROPERTIES
