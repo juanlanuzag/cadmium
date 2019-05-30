@@ -16,29 +16,7 @@
 using VALUE = bool;
 using msg_type = std::pair<position, VALUE>;
 
-#define WIDTH 300
-#define DEPTH 1
-
 #define DURATION 1
-
-position up_left (position& pos) {
-    return {
-            (pos[0] - 1) % WIDTH + (pos[0] - 1 < 0 ? WIDTH : 0),
-            (pos[1] + 1) % DEPTH
-    };
-}
-position up_right (position& pos) {
-    return {
-            (pos[0] + 1) % WIDTH,
-            (pos[1] + 1) % DEPTH
-    };
-}
-position up (position& pos) {
-    return {
-            (pos[0]) % WIDTH,
-            (pos[1] + 1) % DEPTH
-    };
-}
 
 struct cell_atomic_defs{
     //custom ports
@@ -57,7 +35,7 @@ class cell_atomic {
             VALUE cell_state;
             std::priority_queue<std::pair<TIME, VALUE>,std::vector<std::pair<TIME, VALUE>>, std::greater<std::pair<TIME, VALUE>> > delayed_outputs;
         };
-        std::map<position, VALUE> neighbor_values; //Neighbor positions are relative
+        std::unordered_map<position, VALUE, container_hash<position>> neighbor_values; //Neighbor positions are relative
         state_type state;
         position my_position;
 
@@ -65,9 +43,9 @@ class cell_atomic {
         using output_ports=std::tuple<typename defs::out>;
 
         void update_state() {
-            VALUE up_left = neighbor_values[position({-1,1})];
-            VALUE up = neighbor_values[position({0,1})];
-            VALUE up_right = neighbor_values[position({1,1})];
+            VALUE up_left = neighbor_values.at(position({-1,1}));
+            VALUE up = neighbor_values.at(position({0,1}));
+            VALUE up_right = neighbor_values.at(position({1,1}));
 
             if (up_left && up && up_right) {
                 state.cell_state = false;
@@ -112,7 +90,7 @@ class cell_atomic {
 
             std::for_each(rel_neighborhood.begin(),
                           rel_neighborhood.end(),
-                          [this](auto rel) {neighbor_values.insert(std::make_pair(rel, true)); }
+                          [this](auto rel) {neighbor_values.insert(std::make_pair(normalize(rel), true)); }
             );
 
         }

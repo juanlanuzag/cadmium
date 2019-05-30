@@ -8,10 +8,11 @@ set (Cadmium_VERSION_PATCH 4)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
 include(CheckCXXCompilerFlag)
+#SET(CMAKE_BUILD_TYPE Debug)
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("debug mode")
     include(CodeCoverage)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -O0 -fprofile-arcs -ftest-coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -O0 -fprofile-arcs -ftest-coverage")
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 set(Boost_USE_MULTITHREADED ON)
@@ -21,7 +22,7 @@ add_library(Cadmium INTERFACE)
 
 include_directories(include ${Boost_INCLUDE_DIRS})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -pedantic")
 
 # Check for standard to use
 check_cxx_compiler_flag(-std=c++17 HAVE_FLAG_STD_CXX17)

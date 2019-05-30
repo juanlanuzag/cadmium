@@ -24,7 +24,7 @@ namespace cadmium {
                         for(int j = 0; j < dimensions[1]; j++) {
                             position current_pos = {i,j};
                             coupled<TIME>::_models.push_back(
-                                    cadmium::dynamic::translate::make_dynamic_atomic_model<CELL_ATOMIC, TIME>(get_cell_name(current_pos), current_pos, current_pos[0]==150, _relative_neighborhood)
+                                    cadmium::dynamic::translate::make_dynamic_atomic_model<CELL_ATOMIC, TIME>(get_cell_name(current_pos), current_pos, current_pos[0]==1, _relative_neighborhood)
                             );
 
                             for (auto pos : neighbors(current_pos)) {
@@ -84,7 +84,7 @@ namespace cadmium {
                                    _relative_neighborhood.end(),
                                    neighors_pos.begin(),
                                    get_absolute_pos);
-                    return { up_left(pos), up_right(pos), up(pos) };
+                    return neighors_pos;
                 }
 
 

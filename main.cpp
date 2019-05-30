@@ -44,7 +44,7 @@ using logger_top=cadmium::logger::multilogger<log_messages, global_time>;
 
 std::shared_ptr<cadmium::dynamic::modeling::coupled<TIME>> GRILLA = std::make_shared<cadmium::dynamic::modeling::cell_coupled<cell_atomic,TIME>>(
         "Grilla",
-        std::vector<int>({WIDTH, DEPTH}),
+        std::vector<int>({300, 1}),
         std::vector<position>({{-1,1}, {0,1}, {1,1}})
     );
 
