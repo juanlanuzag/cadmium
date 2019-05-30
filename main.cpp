@@ -42,7 +42,11 @@ using local_time=cadmium::logger::logger<cadmium::logger::logger_local_time, cad
 using log_all=cadmium::logger::multilogger<info, debug, state, log_messages, routing, global_time, local_time>;
 using logger_top=cadmium::logger::multilogger<log_messages, global_time>;
 
-std::shared_ptr<cadmium::dynamic::modeling::coupled<TIME>> GRILLA = std::make_shared<cadmium::dynamic::modeling::cell_coupled<TIME>>("Grilla", std::vector<int>({WIDTH, DEPTH}));
+std::shared_ptr<cadmium::dynamic::modeling::coupled<TIME>> GRILLA = std::make_shared<cadmium::dynamic::modeling::cell_coupled<cell_atomic,TIME>>(
+        "Grilla",
+        std::vector<int>({WIDTH, DEPTH}),
+        std::vector<position>({{-1,1}, {0,1}, {1,1}})
+    );
 
 
 

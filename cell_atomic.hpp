@@ -3,14 +3,17 @@
 #include <queue>
 #include <cassert>
 #include <iomanip>
+#include <functional>
 #include <iostream>
 #include <fstream>
-// #include <cadmium/modeling/dynamic_model_translator.hpp>
 #include <cadmium/modeling/ports.hpp>
 #include <cadmium/modeling/message_bag.hpp>
+#include <bits/unordered_map.h>
+
+#include "./cell_helpers.hpp"
+
 
 using VALUE = bool;
-using position = std::pair<int, int>;
 using msg_type = std::pair<position, VALUE>;
 
 #define WIDTH 300
@@ -19,33 +22,23 @@ using msg_type = std::pair<position, VALUE>;
 #define DURATION 1
 
 position up_left (position& pos) {
-    return std::make_pair<int, int>(
-            (pos.first-1) % WIDTH + (pos.first-1 < 0 ? WIDTH : 0),
-            (pos.second+1) % DEPTH
-            );
+    return {
+            (pos[0] - 1) % WIDTH + (pos[0] - 1 < 0 ? WIDTH : 0),
+            (pos[1] + 1) % DEPTH
+    };
 }
 position up_right (position& pos) {
-    return std::make_pair<int, int>(
-            (pos.first+1) % WIDTH,
-            (pos.second+1) % DEPTH
-            );
+    return {
+            (pos[0] + 1) % WIDTH,
+            (pos[1] + 1) % DEPTH
+    };
 }
 position up (position& pos) {
-    return std::make_pair<int, int>(
-            (pos.first) % WIDTH,
-            (pos.second+1) % DEPTH
-            );
+    return {
+            (pos[0]) % WIDTH,
+            (pos[1] + 1) % DEPTH
+    };
 }
-
-std::vector<position> vecinos(position pos) {
-    return { up_left(pos), up_right(pos), up(pos) };
-}
-
-
-
-
-
-
 
 struct cell_atomic_defs{
     //custom ports
@@ -58,25 +51,13 @@ template<typename TIME>
 class cell_atomic {
     using defs=cell_atomic_defs;
 
-    //ports_definition
-
-    protected:
-        void set_cell_state(VALUE& val) {
-            if (state.cell_state != val) {
-                state.cell_state = val;
-            }
-        }
-
     public:
         struct state_type {
             TIME next_internal;
             VALUE cell_state;
             std::priority_queue<std::pair<TIME, VALUE>,std::vector<std::pair<TIME, VALUE>>, std::greater<std::pair<TIME, VALUE>> > delayed_outputs;
-
-            VALUE up_left;
-            VALUE up_right;
-            VALUE up;
         };
+        std::map<position, VALUE> neighbor_values; //Neighbor positions are relative
         state_type state;
         position my_position;
 
@@ -84,21 +65,25 @@ class cell_atomic {
         using output_ports=std::tuple<typename defs::out>;
 
         void update_state() {
-            if (state.up_left && state.up && state.up_right) {
+            VALUE up_left = neighbor_values[position({-1,1})];
+            VALUE up = neighbor_values[position({0,1})];
+            VALUE up_right = neighbor_values[position({1,1})];
+
+            if (up_left && up && up_right) {
                 state.cell_state = false;
-            } else if (state.up_left &&  state.up && !state.up_right) {
+            } else if (up_left &&  up && !up_right) {
                 state.cell_state = true;
-            } else if (state.up_left && !state.up && state.up_right) {
+            } else if (up_left && !up && up_right) {
                 state.cell_state = true;
-            } else if (!state.up_left && state.up && state.up_right) {
+            } else if (!up_left && up && up_right) {
                 state.cell_state = true;
-            } else if (!state.up_left && !state.up && state.up_right) {
+            } else if (!up_left && !up && up_right) {
                 state.cell_state = true;
-            } else if (!state.up_left && state.up && !state.up_right) {
+            } else if (!up_left && up && !up_right) {
                 state.cell_state = true;
-            } else if (state.up_left && !state.up && !state.up_right) {
+            } else if (up_left && !up && !up_right) {
                 state.cell_state = false;
-            } else if (!state.up_left && !state.up && !state.up_right) {
+            } else if (!up_left && !up && !up_right) {
                 state.cell_state = false;
             }
         }
@@ -109,14 +94,8 @@ class cell_atomic {
         // virtual std::tuple<TIME, VALUE> local_comupation_confluence_function(TIME e, typename make_message_bags<input_ports>::type mbs) = 0;
         std::pair<TIME, VALUE> local_comupation_function(TIME e, typename cadmium::make_message_bags<input_ports>::type mbs) {
             for (auto msg : cadmium::get_messages<typename defs::in>(mbs)) {
-                position sender = msg.first;
-                if (sender == up_left(my_position)) {
-                    state.up_left = msg.second;
-                } else if (sender == up_right(my_position)) {
-                    state.up_right = msg.second;
-                } else if (sender == up(my_position)) {
-                    state.up = msg.second;
-                }
+                position rel = absolute_to_relative(my_position, msg.first);
+                neighbor_values[rel] = msg.second;
             }
             update_state();
             return std::make_pair(DURATION, state.cell_state);
@@ -125,11 +104,17 @@ class cell_atomic {
         constexpr cell_atomic() noexcept {}
 
 
-        cell_atomic(position _pos, VALUE initial) {
+        cell_atomic(position _pos, VALUE initial, std::vector<position> rel_neighborhood) {
             my_position = _pos;
             state.cell_state = initial;
             state.delayed_outputs.push(std::make_pair(1, state.cell_state));
             state.next_internal = 1;
+
+            std::for_each(rel_neighborhood.begin(),
+                          rel_neighborhood.end(),
+                          [this](auto rel) {neighbor_values.insert(std::make_pair(rel, true)); }
+            );
+
         }
 
         void internal_transition() {
